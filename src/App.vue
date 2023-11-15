@@ -6,13 +6,23 @@ import { ref } from 'vue';
 const particlePoints = ref([]);
 
 const createParticle = e => {
-  console.log(e.clientX, e.clientY);
-  particlePoints.value.push([e.clientX, e.clientY]);
-  console.log(particlePoints.value);
+  //console.log(e.clientX, e.clientY);
+  const point = [e.clientX, e.clientY];
+  particlePoints.value.push(point);
+  //console.log(particlePoints.value);
+  //console.log(e.target);
+  const context = e.target.getContext('2d');
+  const canvasLeftTop = [
+    e.target.getBoundingClientRect().left,
+    e.target.getBoundingClientRect().top
+  ]
+  drawParticle(context, point, 20, canvasLeftTop);
 }
 
-const drawParticle = (Point) => {
-  ;
+const drawParticle = (context, point, radius, origin) => {
+  context.beginPath();
+  context.arc(-origin[0] + point[0], -origin[1] + point[1], radius, 0, 2 * Math.PI);
+  context.fill();
 }
 
 </script>
