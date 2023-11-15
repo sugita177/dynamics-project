@@ -9,7 +9,6 @@ const createParticle = e => {
   //console.log(e.clientX, e.clientY);
   const point = [e.clientX, e.clientY];
   particlePoints.value.push(point);
-  //console.log(e.target);
   const context = e.target.getContext('2d');
   const canvasLeftTop = [
     e.target.getBoundingClientRect().left,
