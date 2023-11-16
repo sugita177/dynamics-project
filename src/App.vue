@@ -16,7 +16,7 @@ class particle {
   }
 
   drawParticle() {
-    
+
   }
 }
 
