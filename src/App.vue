@@ -3,6 +3,25 @@ import { ref } from 'vue';
 
 //const mousePointX = ref(0);
 //const mousePointY = ref(0);
+
+class particle {
+  point_;
+  radius_;
+  color_;
+
+  constructor(point, radius, color) {
+    this.point_  = point;
+    this.radius_ = radius;
+    this.color_  = color;
+  }
+
+  drawParticle() {
+    
+  }
+}
+
+
+
 const particlePoints = ref([]);
 
 const createParticle = e => {
