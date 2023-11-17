@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import calcNextParticleStates from './calculation.js';
 
 //const mousePointX = ref(0);
 //const mousePointY = ref(0);
@@ -8,6 +9,7 @@ const particles = ref([]);
 const isParticleSelected = ref(false);
 const selectedParticleNumber =ref(-1);
 const mainCanvasColor = ref('#dcdcdc');
+const timerId = ref('1');
 
 onMounted(() => {
   const canvas = document.querySelector('#mainCanvas');
@@ -24,12 +26,14 @@ class Particle {
   velocity_;
   mass_;
   prevPoint_;
+  setVelocity_;
 
   constructor(point, radius, color) {
     this.point_  = point;
     this.radius_ = radius;
     this.color_  = color;
     this.prevPoint_ = point;
+    this.setVelocity_ = false;
   }
 
   drawSelfParticle(context, offset) {
@@ -115,7 +119,7 @@ const drawMovingParticle = e => {
   }
 }
 
-const moveParticle = e => {
+const moveParticleByMouse = e => {
   if(isParticleSelected.value) {
     const particle = particles.value[selectedParticleNumber.value];
     particle.point_ = [e.clientX, e.clientY];
@@ -130,21 +134,58 @@ const moveParticle = e => {
   }
 }
 
+const drawAllParticles = e => {
+  const canvas = document.querySelector('#mainCanvas');
+  const context = canvas.getContext('2d');
+  const canvasOffSet = [
+    canvas.getBoundingClientRect().left,
+    canvas.getBoundingClientRect().top
+    ]
+  for(let i=0; i<particles.value.length; i++) {
+    const particle = particles.value[i];
+    particle.drawSelfParticle(context , canvasOffSet) 
+  }
+}
+
+function setInitialVelocities() {
+
+}
+
+function moveParticlesByEquation() {
+  particles.value = calcNextParticleStates(particles.value);
+}
+
+const startAnimation = e => {
+
+}
+
+const stopAnimation = e => {
+
+}
+
 </script>
 
 <template>
   <main>
+    <div>
+      <button type="button">arrange</button>
+      <button type="button">remove</button>
+      <button type="button">start</button>
+      <button type="button">stop</button>
+    </div>
     <canvas width="1000" height="1000"
       id="mainCanvas"
       @click="createParticle" 
       @mousedown="isExistPatricle" 
       @mousemove="drawMovingParticle" 
-      @mouseup="moveParticle"
+      @mouseup="moveParticleByMouse"
     >
     </canvas>
   </main>
 </template>
 
 <style scoped>
-
+button {
+  cursor: pointer;
+}
 </style>
