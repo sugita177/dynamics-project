@@ -90,8 +90,6 @@ const drawMovingParticle = e => {
     e.target.getBoundingClientRect().left,
     e.target.getBoundingClientRect().top
     ]
-    
-    
     particle.removeSelfParticleDrawing(context,canvasOffSet);
     particle.drawSelfParticle(context, canvasOffSet);
   }
