@@ -74,7 +74,7 @@ const isExistPatricle = e => {
         e.target.getBoundingClientRect().left,
         e.target.getBoundingClientRect().top
       ]
-      particles.value[i].removeSelfParticleDrawing(context,canvasOffSet)
+      particles.value[i].removeSelfParticleDrawing(context,canvasOffSet);
       //console.log(e.clientX, e.clientY);
       //console.log(`particle${i}`);
     }
@@ -83,7 +83,17 @@ const isExistPatricle = e => {
 
 const drawMovingParticle = e => {
   if(isParticleSelected.value) {
-    ;
+    const particle = particles.value[selectedParticleNumber.value];
+    particle.point_ = [e.clientX, e.clientY];
+    const context = e.target.getContext('2d');
+    const canvasOffSet = [
+    e.target.getBoundingClientRect().left,
+    e.target.getBoundingClientRect().top
+    ]
+    
+    
+    particle.removeSelfParticleDrawing(context,canvasOffSet);
+    particle.drawSelfParticle(context, canvasOffSet);
   }
 }
 
