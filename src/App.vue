@@ -1,8 +1,21 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 //const mousePointX = ref(0);
 //const mousePointY = ref(0);
+
+const particles = ref([]);
+const isParticleSelected = ref(false);
+const selectedParticleNumber =ref(-1);
+const mainCanvasColor = ref('#dcdcdc');
+
+onMounted(() => {
+  const canvas = document.querySelector('#mainCanvas');
+  const context = canvas.getContext('2d');
+  context.beginPath();
+  context.fillStyle = mainCanvasColor.value;
+  context.fillRect(0,0,canvas.width, canvas.height);
+})
 
 class Particle {
   point_;
@@ -26,15 +39,13 @@ class Particle {
 
   removeSelfParticleDrawing(context, offset) {
     context.beginPath();
-    context.fillStyle = 'red';
+    context.strokeStyle = mainCanvasColor.value;
+    context.fillStyle = mainCanvasColor.value;
     context.arc(-offset[0] + this.point_[0], -offset[1] + this.point_[1], this.radius_, 0, 2 * Math.PI);
+    context.stroke();
     context.fill();
   }
 }
-
-const particles = ref([]);
-const isParticleSelected = ref(false);
-const selectedParticleNumber =ref(-1);
 
 const createParticle = e => {
   //console.log(e.clientX, e.clientY);
@@ -95,7 +106,13 @@ const moveParticle = e => {
 
 <template>
   <main>
-    <canvas width="1000" height="1000" @click="createParticle" @mousedown="isExistPatricle" @mousemove="drawMovingParticle" @mouseup="moveParticle">
+    <canvas width="1000" height="1000"
+      id="mainCanvas"
+      @click="createParticle" 
+      @mousedown="isExistPatricle" 
+      @mousemove="drawMovingParticle" 
+      @mouseup="moveParticle"
+    >
     </canvas>
   </main>
 </template>
