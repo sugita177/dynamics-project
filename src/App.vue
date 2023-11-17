@@ -22,28 +22,46 @@ class Particle {
   radius_;
   color_;
   velocity_;
+  mass_;
+  prevPoint_;
 
   constructor(point, radius, color) {
     this.point_  = point;
     this.radius_ = radius;
     this.color_  = color;
+    this.prevPoint_ = point;
   }
 
   drawSelfParticle(context, offset) {
     //console.log(this.point_);
     context.beginPath();
+    context.strokeStyle = this.color_;
     context.fillStyle = this.color_;
     context.arc(-offset[0] + this.point_[0], -offset[1] + this.point_[1], this.radius_, 0, 2 * Math.PI);
+    context.stroke();
     context.fill();
+    context.closePath();
   }
 
   removeSelfParticleDrawing(context, offset) {
     context.beginPath();
     context.strokeStyle = mainCanvasColor.value;
     context.fillStyle = mainCanvasColor.value;
-    context.arc(-offset[0] + this.point_[0], -offset[1] + this.point_[1], this.radius_, 0, 2 * Math.PI);
+    context.arc(-offset[0] + this.point_[0], -offset[1] + this.point_[1], this.radius_+context.lineWidth, 0, 2 * Math.PI);
     context.stroke();
     context.fill();
+    context.closePath();
+  }
+
+
+  removePrevSelfParticleDrawing(context, offset) {
+      context.beginPath();
+      context.strokeStyle = mainCanvasColor.value;
+      context.fillStyle = mainCanvasColor.value;
+      context.arc(-offset[0] + this.prevPoint_[0], -offset[1] + this.prevPoint_[1], this.radius_+context.lineWidth, 0, 2 * Math.PI);
+      context.stroke();
+      context.fill();
+      context.closePath();
   }
 }
 
@@ -74,7 +92,7 @@ const isExistPatricle = e => {
         e.target.getBoundingClientRect().left,
         e.target.getBoundingClientRect().top
       ]
-      particles.value[i].removeSelfParticleDrawing(context,canvasOffSet);
+      //particles.value[i].removeSelfParticleDrawing(context,canvasOffSet);
       //console.log(e.clientX, e.clientY);
       //console.log(`particle${i}`);
     }
@@ -84,14 +102,16 @@ const isExistPatricle = e => {
 const drawMovingParticle = e => {
   if(isParticleSelected.value) {
     const particle = particles.value[selectedParticleNumber.value];
-    particle.point_ = [e.clientX, e.clientY];
+    const mousePoint = [e.clientX, e.clientY]
+    particle.point_ = [mousePoint[0], mousePoint[1]];
     const context = e.target.getContext('2d');
     const canvasOffSet = [
     e.target.getBoundingClientRect().left,
     e.target.getBoundingClientRect().top
     ]
-    particle.removeSelfParticleDrawing(context,canvasOffSet);
+    particle.removePrevSelfParticleDrawing(context,canvasOffSet);
     particle.drawSelfParticle(context, canvasOffSet);
+    particle.prevPoint_ = [mousePoint[0], mousePoint[1]];
   }
 }
 
