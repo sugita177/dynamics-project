@@ -11,7 +11,7 @@ const isParticleSelected = ref(false);
 const selectedParticleNumber =ref(-1);
 const mainCanvasColor = ref('#dcdcdc');
 const timerId = ref('1');
-const timeVariation = ref('0.01');
+const timeVariation = ref(0.01);
 
 onMounted(() => {
   const canvas = document.querySelector('#mainCanvas');
@@ -35,6 +35,7 @@ class Particle {
     this.radius_ = radius;
     this.color_  = color;
     this.prevPoint_ = point;
+    this.velocity_ = [0, 0];
     this.setVelocity_ = false;
   }
 
@@ -136,9 +137,13 @@ const moveParticleByMouse = e => {
   }
 }
 
-const drawAllParticles = e => {
+function drawAllParticles() {
   const canvas = document.querySelector('#mainCanvas');
   const context = canvas.getContext('2d');
+  context.beginPath();
+  context.fillStyle = mainCanvasColor.value;
+  context.fillRect(0,0,canvas.width, canvas.height);
+  context.closePath();
   const canvasOffSet = [
     canvas.getBoundingClientRect().left,
     canvas.getBoundingClientRect().top
@@ -151,9 +156,10 @@ const drawAllParticles = e => {
 
 function setInitialVelocities() {
   for(let i=0; i<particles.value.length; i++) {
-    if(particles.value[i].setVelocity_ === true) {
-      particles.value[i].velocity_[0] = Math.random() * 50;
-      particles.value[i].velocity_[1] = Math.random() * 50;      
+    if(particles.value[i].setVelocity_ === false) {
+      particles.value[i].velocity_[0] = Math.random() * 200 - 100;
+      particles.value[i].velocity_[1] = Math.random() * 200 - 100;
+      particles.value[i].setVelocity_ = true;
     }
   }
 }
@@ -163,8 +169,8 @@ function moveParticlesByEquation() {
   setInitialVelocities();
   const newParticleData = calcNextParticleStates(particles.value, timeVariation.value, canvas.width, canvas.height);
   for(let i=0; i<particles.value.length; i++) {
-    particles.value.point_ = newParticleData['points'][i];
-    particles.value.velocity_ = newParticleData['velocities'][i];
+    particles.value[i].point_ = newParticleData['points'][i];
+    particles.value[i].velocity_ = newParticleData['velocities'][i];
   }
   drawAllParticles();
 }
@@ -173,7 +179,7 @@ const startAnimation = e => {
   mainCanvasOperationPossible.value = false;
   document.querySelector('#startButton').disabled = true;
   document.querySelector('#stopButton').disabled = false;
-  timerId.value = setInterval(moveParticlesByEquation, 1000);
+  timerId.value = setInterval(moveParticlesByEquation, 100);
 }
 
 const stopAnimation = e => {
