@@ -11,6 +11,7 @@ const isParticleSelected = ref(false);
 const selectedParticleNumber =ref(-1);
 const mainCanvasColor = ref('#dcdcdc');
 const timerId = ref('1');
+const timeVariation = ref('0.01');
 
 onMounted(() => {
   const canvas = document.querySelector('#mainCanvas');
@@ -158,8 +159,14 @@ function setInitialVelocities() {
 }
 
 function moveParticlesByEquation() {
+  const canvas = document.querySelector('#mainCanvas');
   setInitialVelocities();
-  //particles.value = calcNextParticleStates(particles.value);
+  const newParticleData = calcNextParticleStates(particles.value, timeVariation.value, canvas.width, canvas.height);
+  for(let i=0; i<particles.value.length; i++) {
+    particles.value.point_ = newParticleData['points'][i];
+    particles.value.velocity_ = newParticleData['velocities'][i];
+  }
+  drawAllParticles();
 }
 
 const startAnimation = e => {
