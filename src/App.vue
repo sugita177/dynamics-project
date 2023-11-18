@@ -5,6 +5,7 @@ import calcNextParticleStates from './calculation.js';
 //const mousePointX = ref(0);
 //const mousePointY = ref(0);
 
+const mainCanvasOperationPossible = ref([true]);
 const particles = ref([]);
 const isParticleSelected = ref(false);
 const selectedParticleNumber =ref(-1);
@@ -148,19 +149,55 @@ const drawAllParticles = e => {
 }
 
 function setInitialVelocities() {
-
+  for(let i=0; i<particles.value.length; i++) {
+    if(particles.value[i].setVelocity_ === true) {
+      particles.value[i].velocity_[0] = Math.random() * 50;
+      particles.value[i].velocity_[1] = Math.random() * 50;      
+    }
+  }
 }
 
 function moveParticlesByEquation() {
-  particles.value = calcNextParticleStates(particles.value);
+  setInitialVelocities();
+  //particles.value = calcNextParticleStates(particles.value);
 }
 
 const startAnimation = e => {
-
+  mainCanvasOperationPossible.value = false;
+  document.querySelector('#startButton').disabled = true;
+  document.querySelector('#stopButton').disabled = false;
+  timerId.value = setInterval(moveParticlesByEquation, 1000);
 }
 
 const stopAnimation = e => {
+  mainCanvasOperationPossible.value = true;
+  document.querySelector('#startButton').disabled = false;
+  document.querySelector('#stopButton').disabled = true;
+  clearInterval(timerId.value);
+}
 
+const mainCanvasClick = e => {
+  if(mainCanvasOperationPossible.value){
+    createParticle(e);
+  }
+}
+
+const mainCanvasMouseDown = e => {
+  if(mainCanvasOperationPossible.value){
+    isExistPatricle(e);
+  }
+}
+
+const mainCanvasMouseMove = e => {
+  if(mainCanvasOperationPossible.value){
+    drawMovingParticle(e);
+  }
+}
+
+const mainCanvasMouseUp = e => {
+  if(mainCanvasOperationPossible.value){
+    moveParticleByMouse(e);
+  }
 }
 
 </script>
@@ -168,17 +205,17 @@ const stopAnimation = e => {
 <template>
   <main>
     <div>
-      <button type="button">arrange</button>
-      <button type="button">remove</button>
-      <button type="button">start</button>
-      <button type="button">stop</button>
+      <button id="arrangeButton" type="button" @click="">arrange</button>
+      <button id="removeButton"  type="button" @click="">remove </button>
+      <button id="startButton"   type="button" @click="startAnimation">start  </button>
+      <button id="stopButton"    type="button" @click="stopAnimation" disabled>stop   </button>
     </div>
     <canvas width="1000" height="1000"
       id="mainCanvas"
-      @click="createParticle" 
-      @mousedown="isExistPatricle" 
-      @mousemove="drawMovingParticle" 
-      @mouseup="moveParticleByMouse"
+      @click     ="mainCanvasClick" 
+      @mousedown ="mainCanvasMouseDown"
+      @mousemove ="mainCanvasMouseMove"
+      @mouseup   ="mainCanvasMouseUp"
     >
     </canvas>
   </main>
