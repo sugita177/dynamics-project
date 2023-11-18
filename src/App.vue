@@ -157,8 +157,8 @@ function drawAllParticles() {
 function setInitialVelocities() {
   for(let i=0; i<particles.value.length; i++) {
     if(particles.value[i].setVelocity_ === false) {
-      particles.value[i].velocity_[0] = Math.random() * 200 - 100;
-      particles.value[i].velocity_[1] = Math.random() * 200 - 100;
+      particles.value[i].velocity_[0] = Math.random() * 600 - 300;
+      particles.value[i].velocity_[1] = Math.random() * 600 - 300;
       particles.value[i].setVelocity_ = true;
     }
   }
@@ -166,8 +166,12 @@ function setInitialVelocities() {
 
 function moveParticlesByEquation() {
   const canvas = document.querySelector('#mainCanvas');
+  const canvasOffSet = [
+    canvas.getBoundingClientRect().left,
+    canvas.getBoundingClientRect().top
+    ]
   setInitialVelocities();
-  const newParticleData = calcNextParticleStates(particles.value, timeVariation.value, canvas.width, canvas.height);
+  const newParticleData = calcNextParticleStates(particles.value, timeVariation.value, canvas.width, canvas.height, canvasOffSet);
   for(let i=0; i<particles.value.length; i++) {
     particles.value[i].point_ = newParticleData['points'][i];
     particles.value[i].velocity_ = newParticleData['velocities'][i];
